@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using VinciOrders.API.Data;
 using VinciOrders.API.Repositories;
 using VinciOrders.API.Services;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +14,26 @@ builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 
 // Adiciona os controllers da API
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        // Customiza as mensagens de erro de validação
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            var erros = context.ModelState
+                .Where(e => e.Value!.Errors.Count > 0)
+                .SelectMany(e => e.Value!.Errors)
+                .Select(e => e.ErrorMessage)
+                .Where(msg => !string.IsNullOrWhiteSpace(msg))
+                .ToList();
+
+            // Se não tiver mensagem customizada, retorna uma mensagem genérica
+            if (!erros.Any())
+                erros.Add("Dados inválidos. Verifique os campos enviados.");
+
+            return new BadRequestObjectResult(new { errors = erros });
+        };
+    });
 
 // Adiciona o Swagger para visualizar e testar a API no navegador
 builder.Services.AddEndpointsApiExplorer();

@@ -66,7 +66,7 @@ public class OrderService : IOrderService
         {
             Id = Guid.NewGuid(),
             CustomerName = dto.CustomerName,
-            Value = dto.Value,
+            Value = dto.Value!.Value,
             OrderDate = DateTime.UtcNow
         };
 
