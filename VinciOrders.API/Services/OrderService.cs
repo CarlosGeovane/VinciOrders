@@ -8,10 +8,8 @@ public class OrderService : IOrderService
 {
     private readonly IOrderRepository _repository;
 
-    // ILogger permite registrar mensagens no terminal durante a execução
     private readonly ILogger<OrderService> _logger;
 
-    // O .NET injeta tanto o repositório quanto o logger automaticamente
     public OrderService(IOrderRepository repository, ILogger<OrderService> logger)
     {
         _repository = repository;
@@ -20,7 +18,6 @@ public class OrderService : IOrderService
 
     public async Task<IEnumerable<OrderResponseDto>> GetAllAsync()
     {
-        // Registra no terminal que a busca foi solicitada
         _logger.LogInformation("Buscando todos os pedidos.");
 
         var orders = await _repository.GetAllAsync();
@@ -44,7 +41,6 @@ public class OrderService : IOrderService
 
         if (order == null)
         {
-            // LogWarning para situações que não são erro mas merecem atenção
             _logger.LogWarning("Pedido com Id {Id} não encontrado.", id);
             return null;
         }
@@ -72,7 +68,6 @@ public class OrderService : IOrderService
 
         await _repository.AddAsync(order);
 
-        // LogInformation confirmando que o pedido foi criado com sucesso
         _logger.LogInformation("Pedido criado com sucesso. Id: {Id}", order.Id);
 
         return new OrderResponseDto
