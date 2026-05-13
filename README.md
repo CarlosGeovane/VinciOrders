@@ -12,6 +12,8 @@ API REST para cadastro e consulta de pedidos, desenvolvida como parte do process
 - [Moq](https://github.com/moq/moq4) — simulação de dependências nos testes
 
 ## 📁 Estrutura do Projeto
+
+```
 VinciOrders.API/
 ├── Controllers/     # Recebe as requisições HTTP e devolve respostas
 ├── Services/        # Regras de negócio e validações
@@ -20,9 +22,10 @@ VinciOrders.API/
 ├── DTOs/            # Objetos de entrada e saída da API
 ├── Data/            # Configuração do Entity Framework
 └── Migrations/      # Histórico de versões do banco de dados
+
 VinciOrders.Tests/
 └── OrderServiceTests.cs  # Testes unitários do serviço
-
+```
 ## ⚙️ Como Rodar o Projeto
 
 ### Pré-requisitos
