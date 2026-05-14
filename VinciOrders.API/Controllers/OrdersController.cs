@@ -17,8 +17,8 @@ public class OrdersController : ControllerBase
         _service = service;
     }
 
-
     [HttpGet]
+    [ProducesResponseType(typeof(IEnumerable<OrderResponseDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll()
     {
         var orders = await _service.GetAllAsync();
@@ -27,10 +27,11 @@ public class OrdersController : ControllerBase
 
 
     [HttpGet("{id}")]
+    [ProducesResponseType(typeof(OrderResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById(Guid id)
     {
         var order = await _service.GetByIdAsync(id);
-
 
         if (order == null)
             return NotFound(new { message = "Pedido não encontrado." });
@@ -38,18 +39,11 @@ public class OrdersController : ControllerBase
         return Ok(order);
     }
 
-
     [HttpPost]
+    [ProducesResponseType(typeof(OrderResponseDto), StatusCodes.Status201Created)]
     public async Task<IActionResult> Create([FromBody] CreateOrderDto dto)
     {
-        try
-        {
-            var order = await _service.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = order.Id }, order);
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(new { message = ex.Message });
-        }
+        var order = await _service.CreateAsync(dto);
+        return CreatedAtAction(nameof(GetById), new { id = order.Id }, order);
     }
 }
